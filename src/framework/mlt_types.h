@@ -47,7 +47,9 @@ typedef enum
 	mlt_image_opengl,  /**< (deprecated) suitable for OpenGL texture */
 	mlt_image_glsl,    /**< for opengl module internal use only */
 	mlt_image_glsl_texture, /**< an OpenGL texture name */
-	mlt_image_yuv422p16, /**< planar YUV 4:2:2, 32bpp, (1 Cr & Cb sample per 2x1 Y samples), little-endian */
+	mlt_image_yuv422p16, /**< planar YUV 4:2:2, 32bpp, (1 Cr & Cb sample per 2x1 Y samples), little-endian.
+				this format has planes's stride odd to 32 to avoid artifacts due to SIMD
+				processing optimized that uses 256bit registers */
 	mlt_image_invalid
 }
 mlt_image_format;
