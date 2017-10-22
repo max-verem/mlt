@@ -1,4 +1,4 @@
-schema_version: 0.1
+schema_version: 0.3
 type: transition
 identifier: composite
 title: Composite
@@ -155,3 +155,12 @@ parameters:
     type: geometry
     readonly: no
     mutable: yes
+  - identifier: nofit
+    title: Keep original dimention of B frame
+    description: >
+      When set, causes the B frame to original dimention. Similar to "crop" but
+      will honor (v|h)align information.
+    type: boolean
+    default: 0
+    mutable: yes
+    widget: checkbox
