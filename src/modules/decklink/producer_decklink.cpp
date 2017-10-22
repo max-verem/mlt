@@ -338,6 +338,30 @@ public:
 		pthread_mutex_unlock( &m_mutex );
 	}
 
+	void setFrameProps( mlt_frame frame )
+	{
+		mlt_profile profile = mlt_service_profile( MLT_PRODUCER_SERVICE( getProducer() ) );
+		mlt_properties properties = MLT_FRAME_PROPERTIES( frame );
+		mlt_properties_set_int( properties, "progressive", profile->progressive );
+		mlt_properties_set_int( properties, "meta.media.progressive", profile->progressive );
+		mlt_properties_set_int( properties, "top_field_first", m_topFieldFirst );
+		mlt_properties_set_double( properties, "aspect_ratio", mlt_profile_sar( profile ) );
+		mlt_properties_set_int( properties, "meta.media.sample_aspect_num", profile->sample_aspect_num );
+		mlt_properties_set_int( properties, "meta.media.sample_aspect_den", profile->sample_aspect_den );
+		mlt_properties_set_int( properties, "meta.media.frame_rate_num", profile->frame_rate_num );
+		mlt_properties_set_int( properties, "meta.media.frame_rate_den", profile->frame_rate_den );
+		mlt_properties_set_int( properties, "width", profile->width );
+		mlt_properties_set_int( properties, "meta.media.width", profile->width );
+		mlt_properties_set_int( properties, "height", profile->height );
+		mlt_properties_set_int( properties, "meta.media.height", profile->height );
+		mlt_properties_set_int( properties, "format", ( m_pixel_format == bmdFormat8BitYUV ) ? mlt_image_yuv422 : mlt_image_yuv422p16 );
+		mlt_properties_set_int( properties, "colorspace", m_colorspace );
+		mlt_properties_set_int( properties, "meta.media.colorspace", m_colorspace );
+		mlt_properties_set_int( properties, "audio_frequency", 48000 );
+		mlt_properties_set_int( properties, "audio_channels",
+			mlt_properties_get_int( MLT_PRODUCER_PROPERTIES( getProducer() ), "channels" ) );
+	}
+
 	mlt_frame getFrame()
 	{
 		struct timeval now;
@@ -398,28 +422,7 @@ public:
 
 		// Set frame timestamp and properties
 		if ( frame )
-		{
-			mlt_profile profile = mlt_service_profile( MLT_PRODUCER_SERVICE( getProducer() ) );
-			mlt_properties properties = MLT_FRAME_PROPERTIES( frame );
-			mlt_properties_set_int( properties, "progressive", profile->progressive );
-			mlt_properties_set_int( properties, "meta.media.progressive", profile->progressive );
-			mlt_properties_set_int( properties, "top_field_first", m_topFieldFirst );
-			mlt_properties_set_double( properties, "aspect_ratio", mlt_profile_sar( profile ) );
-			mlt_properties_set_int( properties, "meta.media.sample_aspect_num", profile->sample_aspect_num );
-			mlt_properties_set_int( properties, "meta.media.sample_aspect_den", profile->sample_aspect_den );
-			mlt_properties_set_int( properties, "meta.media.frame_rate_num", profile->frame_rate_num );
-			mlt_properties_set_int( properties, "meta.media.frame_rate_den", profile->frame_rate_den );
-			mlt_properties_set_int( properties, "width", profile->width );
-			mlt_properties_set_int( properties, "meta.media.width", profile->width );
-			mlt_properties_set_int( properties, "height", profile->height );
-			mlt_properties_set_int( properties, "meta.media.height", profile->height );
-			mlt_properties_set_int( properties, "format", ( m_pixel_format == bmdFormat8BitYUV ) ? mlt_image_yuv422 : mlt_image_yuv422p16 );
-			mlt_properties_set_int( properties, "colorspace", m_colorspace );
-			mlt_properties_set_int( properties, "meta.media.colorspace", m_colorspace );
-			mlt_properties_set_int( properties, "audio_frequency", 48000 );
-			mlt_properties_set_int( properties, "audio_channels",
-				mlt_properties_get_int( MLT_PRODUCER_PROPERTIES( getProducer() ), "channels" ) );
-		}
+			setFrameProps( frame );
 		else
 			mlt_log_warning( getProducer(), "buffer underrun\n" );
 
