@@ -772,7 +772,10 @@ static int get_frame( mlt_producer producer, mlt_frame_ptr frame, int index )
 		}
 	}
 	if ( !*frame )
+	{
 		*frame = mlt_frame_init( MLT_PRODUCER_SERVICE(producer) );
+		decklink->setFrameProps( *frame );
+	}
 
 	// Calculate the next timecode
 	mlt_producer_prepare_next( producer );
